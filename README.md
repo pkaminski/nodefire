@@ -40,7 +40,7 @@ co(
       theFoo: stuff.child('foos/:foo').get(),
       theUser: stuff.root.child('users/{baz.qux}').get(),
     };
-    
+
     yield [
       stuff.child('counters/:foo').transaction((value) => value + 1),
       stuff.child('bars/:foo/{theUser.username}', data).set(data.theFoo.bar),
@@ -94,6 +94,16 @@ static SERVER_TIMESTAMP
  * @param {boolean} enable Whether to enable or disable logging.
  */
 static enableFirebaseLogging(enable)
+
+/**
+ * Turns debugging of permission denied errors on and off for the database this ref is attached
+ * to.  When turned on, permission denied errors will have an additional permissionTrace property
+ * with a human-readable description of which security rules failed.  There's no performance
+ * penalty to turning this on until a permission actually gets denied.
+ * @param {string} legacySecret A legacy database secret, needed to access the old API that allows
+ *     simulating request with debug feedback.  Pass a falsy value to turn off debugging.
+ */
+enablePermissionDebugging(legacySecret)
 
 /**
  * Adds an intercepting callback before all NodeFire database operations.  This callback can
@@ -285,7 +295,7 @@ transaction(updateFunction, options)
 /**
  * Fetches the keys of the current reference's children without also fetching all the contents,
  * using the Firebase REST API.
- * 
+ *
  * @param options An options object with the following items, all optional:
  *   - maxTries: the maximum number of times to try to fetch the keys, in case of transient errors
  *               (defaults to 1)
